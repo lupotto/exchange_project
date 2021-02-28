@@ -65,7 +65,7 @@ contract('Token', ([deployer, reciever, sender]) => {
         balanceOf.toString().should.equal(tokens(100).toString())
       })
 
-      it('emits a transfer event', async() => {
+      it('emits a transfer event', () => {
         const log = result.logs[0]
         log.event.should.eq('Transfer')
         const event = log.args
@@ -75,7 +75,7 @@ contract('Token', ([deployer, reciever, sender]) => {
       })
     })
 
-    describe('failure', async() => {
+    describe('failure', () => {
       it('rejects insufficient balances', async() => {
         let invalidAmount;
         invalidAmount = tokens(1000000000) //1000 milion Invalid Supply
@@ -85,8 +85,8 @@ contract('Token', ([deployer, reciever, sender]) => {
         invalidAmount = tokens(10)
         await token.transfer(deployer, invalidAmount, { from: reciever}).should.be.rejectedWith(EVM_REVERT)
       })
-      it('rejects invalid recpipients', async() => {
-        await token.transfer(0x0, amount, { from: deployer }).should.be.rejectedWith(EVM_REVERT)
+      it('rejects invalid recpipients', () => {
+         token.transfer(0x0, amount, { from: deployer }).should.be.rejected
       })
     })
   })
