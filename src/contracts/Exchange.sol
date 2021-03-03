@@ -10,7 +10,7 @@ import "./Token.sol";
 // [X] Withdraw tokens
 // [X] Check balances
 // [X] Make order
-// [ ] Cancel order
+// [X] Cancel order
 // [ ] Fill order
 // [ ] Charge fees
 // [ ] Refractor Events
@@ -24,12 +24,14 @@ contract Exchange {
   mapping(address => mapping(address => uint256)) public tokens;
   mapping(uint256 => _Order) public orders;
   uint256 public orderCount;
+  mapping(uint256 => bool) public orderCancelled;
 
   //Events
   event Deposit(address token, address user, uint256 amount, uint256 balance);
   event Withdraw(address token, address user, uint256  amount, uint256 balance);
+
   event Order(
-      uint256 id,
+    uint256 id,
       address user,
       address tokenGet,
       uint256 amountGet,
@@ -47,9 +49,16 @@ contract Exchange {
     uint256 amountGive;
     uint256 timestamp;
   }
-  // a way to model the order
-  // a way to store the order
-  // add the order to storage
+
+  event Cancel(
+    uint256 id,
+    address user,
+    address tokenGet,
+    uint256 amountGet,
+    address tokenGive,
+    uint256 amountGive,
+    uint256 timestamp
+  );
 
   constructor(address _feeAccount, uint256 _feePercent) public {
     feeAccount = _feeAccount;
@@ -96,5 +105,13 @@ contract Exchange {
     orderCount = orderCount.add(1);
     orders[orderCount] = _Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
     emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
+  }
+
+  function cancelOrder(uint256 _id) public {
+    _Order storage _order = orders[_id]; //fetch order
+    require(address(_order.user) == msg.sender);
+    require(_order.id == _id); //the order must exists
+    orderCancelled[_id] = true;
+    emit Cancel(_order.id, msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, now);
   }
 }

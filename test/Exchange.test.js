@@ -239,4 +239,54 @@ contract('Exchange', ([deployer, feeAccount, user2, user1]) => {
     })
   })
 
+  describe('order actions', async() => {
+    let amount = 1
+
+    beforeEach(async () => {
+      //user1 deposits ether
+      await exchange.depositEther({from: user1, value: ether(amount)})
+      //user1 makes an order to buy tokens with Ether
+      await exchange.makeOrder(token.address, tokens(amount), ETHER_ADDRESS, ether(amount), {from: user1})
+    })
+
+    describe('cancelling orders', async() => {
+      let result
+
+      describe('success', async () => {
+        beforeEach(async () => {
+          result = await exchange.cancelOrder('1', {from: user1})
+        })
+
+        it('updates cancelled orders', async() => {
+          const orderCancelled = await exchange.orderCancelled(amount)
+          orderCancelled.should.equal(true)
+        })
+
+        it('emits a Cancel event', () => {
+          const log = result.logs[0]
+          log.event.should.eq('Cancel')
+          const event = log.args
+          event.id.toString().should.equal('1', 'id is correct')
+          event.user.should.equal(user1, 'user is correct')
+          event.tokenGet.should.equal(token.address, 'tokenGet is correct')
+          event.amountGet.toString().should.equal(tokens(amount).toString(), 'amountGet is correct')
+          event.tokenGive.should.equal(ETHER_ADDRESS, 'tokenGive is correct')
+          event.amountGive.toString().should.equal(ether(amount).toString(), 'amountGive is correct')
+          event.timestamp.toString().length.should.be.at.least(1, 'timestamp is present')
+        })
+
+      })
+      describe('failure', async () => {
+        it('rejects invalid order ids', async() => {
+          const invalidOrderId = 99999
+          await exchange.cancelOrder(invalidOrderId, {from:user1}).should.be.rejectedWith(EVM_REVERT)
+        })
+
+        it('rejects unauthorized cancelations', async() => {
+          //cancel orders from other users
+          await exchange.cancelOrder('1', {from:user2}).should.be.rejectedWith(EVM_REVERT)
+        })
+      })
+    });
+  })
 })
