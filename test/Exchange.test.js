@@ -8,7 +8,7 @@ require('chai')
   .should()
 
 
-contract('Exchange', ([deployer, feeAccount, user4, user3, user2, user1]) => {
+contract('Exchange', ([deployer, feeAccount, user1, user2]) => {
   let exchange
   let token
   const feePercent = 10
