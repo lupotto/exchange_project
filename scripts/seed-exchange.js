@@ -1,4 +1,4 @@
-const Token = artifacts.require('Token');
+ const Token = artifacts.require('Token');
 const Exchange = artifacts.require('Exchange');
 
 const EVM_REVERT = 'VM Expection while processing transaction: revert'
