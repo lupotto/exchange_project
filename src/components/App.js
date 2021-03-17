@@ -3,7 +3,11 @@ import './App.css';
 import Web3 from 'web3';
 import {connect} from 'react-redux'
 import Token from '../abis/Token.json';
-import {loadWeb3} from '../store/interactions'
+import {loadWeb3,
+        loadAccount,
+        loadToken,
+        loadExchange
+    } from '../store/interactions'
 
 class App extends Component {
   componentDidMount(){
@@ -15,12 +19,11 @@ class App extends Component {
     console.log("web3", web3)
     const network = await web3.eth.net.getNetworkType()
     const networkId = await web3.eth.net.getId()
-    const accounts = await web3.eth.getAccounts()
+    const accounts = await loadAccount(web3, dispatch)
     const abi = Token.abi
     const networks = Token.networks
-    const token = new web3.eth.Contract(Token.abi, Token.networks[networkId].address)
-    const totalSupply = await token.methods.totalSupply().call()
-    console.log("totalSupply", totalSupply);
+    const token = loadToken(web3, networkId, dispatch)
+    loadExchange(web3, networkId, dispatch)
   }
   render(){
     return(
