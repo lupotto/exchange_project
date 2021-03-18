@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import Web3 from 'web3';
+import Navbar from './Navbar'
 import {connect} from 'react-redux'
 import Token from '../abis/Token.json';
 import {loadWeb3,
@@ -8,6 +9,7 @@ import {loadWeb3,
         loadToken,
         loadExchange
     } from '../store/interactions'
+import { accountSelector } from '../store/selectors'
 
 class App extends Component {
   componentDidMount(){
@@ -16,7 +18,6 @@ class App extends Component {
 
   async loadBlockchainData(dispatch) {
     const web3 =loadWeb3(dispatch)
-    console.log("web3", web3)
     const network = await web3.eth.net.getNetworkType()
     const networkId = await web3.eth.net.getId()
     const accounts = await loadAccount(web3, dispatch)
@@ -28,25 +29,7 @@ class App extends Component {
   render(){
     return(
       <div>
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-          <a className="navbar-brand" href="/#">Navbar</a>
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <a className="nav-link" href="/#">Link 1</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/#">Link 2</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/#">Link 3</a>
-              </li>
-            </ul>
-          </div>
-        </nav>
+        <Navbar />
         <div className="content">
           <div className="vertical-split">
             <div className="card bg-dark text-white">
@@ -118,7 +101,7 @@ class App extends Component {
 
 function mapStateToProps(state){
   return {
-
+  //  account: accountSelector(state)
   }
 }
 
