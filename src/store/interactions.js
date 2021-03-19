@@ -3,7 +3,8 @@ import {
   web3Loaded,
   web3AccountLoaded,
   tokenLoaded,
-  exchangeLoaded
+  exchangeLoaded,
+  cancelledOrdersLoaded
 } from './actions'
 import Token from '../abis/Token.json'
 import Exchange from '../abis/Exchange.json'
@@ -41,4 +42,18 @@ export const loadExchange = async (web3, networkId, dispatch) => {
     console.log('Contract not deployed to the current network. Please select another network with Metamask.')
     return null
   }
+}
+
+export const loadAllOrders = async(exchange, dispatch) => {
+  console.log(exchange);
+  // Fetch cancelled orders with the "Cancel" event stream
+  const cancelStream = await exchange.getPastEvents('Cancel', {fromBlock: 0, toBlock: 'latest'})
+  //Format cancelled orders
+  const cancelledOrders = cancelStream.map((event) => event.returnValues)
+  // Add cancelled order to the redux store
+  dispatch(cancelledOrdersLoaded(cancelledOrders))
+  // Fetch filled orders with the "Trade" event stream
+
+  // Fetch all orders with the "Order" event stream
+
 }
