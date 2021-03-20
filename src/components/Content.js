@@ -67,9 +67,8 @@ class Content extends Component {
           </div>
         </div>
       </div>
-      <div className="vertical">
-        <Trades />
-      </div>
+      <Trades />
+
     </div>
     )
   }
