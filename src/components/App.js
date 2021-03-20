@@ -36,7 +36,6 @@ class App extends Component {
     return(
       <div>
         <Navbar />
-        //If the contracts are loaded, show the content if not blank "content"
         {this.props.contractsLoaded ? <Content /> : <div className="content"> </div>}
       </div>
     );
