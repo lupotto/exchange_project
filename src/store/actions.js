@@ -32,3 +32,18 @@ export function cancelledOrdersLoaded(cancelledOrders){
     cancelledOrders: cancelledOrders
   }
 }
+//Filled orders
+export function filledOrdersLoaded(filledOrders){
+  return {
+    type: 'FILLED_ORDERS_LOADED',
+    filledOrders: filledOrders
+  }
+}
+
+//All orders
+export function allOrdersLoaded(allOrders){
+  return {
+    type: 'ALL_ORDERS_LOADED',
+    allOrders: allOrders
+  }
+}
