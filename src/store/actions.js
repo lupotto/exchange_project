@@ -62,3 +62,10 @@ export function orderCancelled(order){
     order: order
   }
 }
+
+//All orders
+export function orderFilling(){
+  return {
+    type: 'ORDER_FILLING'
+  }
+}
