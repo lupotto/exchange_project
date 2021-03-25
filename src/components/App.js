@@ -12,13 +12,12 @@ import { contractsLoadedSelector } from '../store/selectors'
 
 
 class App extends Component {
-  componentDidMount(){
+  componentWillMount(){
     this.loadBlockchainData(this.props.dispatch)
   }
 
   async loadBlockchainData(dispatch) {
-    const web3 =loadWeb3(dispatch)
-    await web3.eth.net.getNetworkType()
+    const web3 = await loadWeb3(dispatch)
     const networkId = await web3.eth.net.getId()
     await loadAccount(web3, dispatch)
     const token = await loadToken(web3, networkId, dispatch)
@@ -49,4 +48,4 @@ function mapStateToProps(state){
 }
 
 //Connect app to Redux
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(App)

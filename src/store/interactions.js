@@ -9,22 +9,33 @@ import {
   allOrdersLoaded,
   orderCancelling,
   orderCancelled,
-  orderFilling
+  orderFilling,
+  orderFilled
 } from './actions'
 import Token from '../abis/Token.json'
 import Exchange from '../abis/Exchange.json'
 
-export const loadWeb3 = (dispatch) => {
-  const web3 = new Web3(window.ethereum)
-  dispatch(web3Loaded(web3))
-  return web3
+export const loadWeb3 = async (dispatch) => {
+  if(typeof window.ethereum!=='undefined'){
+    const web3 = new Web3(window.ethereum)
+    dispatch(web3Loaded(web3))
+    return web3
+  } else {
+    window.alert('Please install MetaMask')
+    window.location.assign("https://metamask.io/")
+  }
 }
 
 export const loadAccount = async (web3, dispatch) => {
   const accounts = await web3.eth.getAccounts()
-  const account = accounts[0]
-  dispatch(web3AccountLoaded(account))
-  return account
+  const account = await accounts[0]
+  if(typeof account !== 'undefined'){
+    dispatch(web3AccountLoaded(account))
+    return account
+  } else {
+    window.alert('Please login with MetaMask')
+    return null
+  }
 }
 
 export const loadToken = async (web3, networkId, dispatch) => {
@@ -49,27 +60,26 @@ export const loadExchange = async (web3, networkId, dispatch) => {
   }
 }
 
-export const loadAllOrders = async(exchange, dispatch) => {
-  console.log(exchange);
+export const loadAllOrders = async (exchange, dispatch) => {
   // Fetch cancelled orders with the "Cancel" event stream
-  const cancelStream = await exchange.getPastEvents('Cancel', {fromBlock: 0, toBlock: 'latest'})
-  //Format cancelled orders
+  const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: 0, toBlock: 'latest' })
+  // Format cancelled orders
   const cancelledOrders = cancelStream.map((event) => event.returnValues)
-  // Add cancelled order to the redux store
+  // Add cancelled orders to the redux store
   dispatch(cancelledOrdersLoaded(cancelledOrders))
 
   // Fetch filled orders with the "Trade" event stream
-  const tradeStream = await exchange.getPastEvents('Trade', {fromBlock: 0, toBlock: 'latest'})
-  //Format trade orders
+  const tradeStream = await exchange.getPastEvents('Trade', { fromBlock: 0, toBlock: 'latest' })
+  // Format filled orders
   const filledOrders = tradeStream.map((event) => event.returnValues)
-  // Add traded orders to the redux store
+  // Add cancelled orders to the redux store
   dispatch(filledOrdersLoaded(filledOrders))
 
   // Load order stream
-  const orderStream = await exchange.getPastEvents('Order', {fromBlock: 0, toBlock: 'latest'})
-  //Format trade orders
+  const orderStream = await exchange.getPastEvents('Order', { fromBlock: 0,  toBlock: 'latest' })
+  // Format order stream
   const allOrders = orderStream.map((event) => event.returnValues)
-  // Add traded orders to the redux store
+  // Add open orders to the redux store
   dispatch(allOrdersLoaded(allOrders))
 }
 
@@ -77,26 +87,30 @@ export const subscribeToEvents = async (exchange, dispatch) => {
   exchange.events.Cancel({}, (error, event) => {
     dispatch(orderCancelled(event.returnValues))
   })
+
+  exchange.events.Trade({}, (error, event) => {
+    dispatch(orderFilled(event.returnValues))
+  })
 }
 
 export const cancelOrder = (dispatch, exchange, order, account) => {
   exchange.methods.cancelOrder(order.id).send({ from: account })
-  .on('transactionHash', (hash)  => {
-      dispatch(orderCancelling())
+  .on('transactionHash', (hash) => {
+     dispatch(orderCancelling())
   })
   .on('error', (error) => {
     console.log(error)
-    window.alert('There was an error')
+    window.alert('There was an error!')
   })
 }
 
 export const fillOrder = (dispatch, exchange, order, account) => {
   exchange.methods.fillOrder(order.id).send({ from: account })
-  .on('transactionHash', (hash)  => {
-      dispatch(orderFilling())
+  .on('transactionHash', (hash) => {
+     dispatch(orderFilling())
   })
   .on('error', (error) => {
     console.log(error)
-    window.alert('There was an error')
+    window.alert('There was an error!')
   })
 }
