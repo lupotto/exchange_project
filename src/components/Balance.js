@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { loadBalances } from '../store/interactions'
+import { Tabs, Tab} from 'react-bootstrap'
+import Spinner from './Spinner'
 import {
   web3Selector,
   exchangeSelector,
@@ -9,8 +11,80 @@ import {
   etherBalanceSelector,
   tokenBalanceSelector,
   exchangeEtherBalanceSelector,
-  exchangeTokenBalanceSelector
+  exchangeTokenBalanceSelector,
+  balancesLoadingSelector
 } from '../store/selectors'
+
+const showForm = (props) => {
+  const {
+    etherBalance,
+    tokenBalance,
+    exchangeEtherBalance,
+    exchangeTokenBalance
+  } = props
+
+  return(
+    <Tabs defaultActiveKey="deposit" className="bg-dark text-white">
+
+      <Tab eventKey="deposit" title="Deposit" className="bg-dark">
+        <table className="table table-dark table-sm small">
+          <thead>
+            <tr>
+              <th> Token </th>
+              <th> Wallet </th>
+              <th> Exchange </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td> ETH </td>
+              <td> {etherBalance} </td>
+              <td> {exchangeEtherBalance} </td>
+            </tr>
+          </tbody>
+        </table>
+        <table className="table table-dark table-sm small">
+          <tbody>
+            <tr>
+              <td> ALEX </td>
+              <td> {tokenBalance} </td>
+              <td> {exchangeTokenBalance} </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </Tab>
+
+      <Tab eventKey="withdraw" title="Withdraw" className="bg-dark">
+        <table className="table table-dark table-sm small">
+          <thead>
+            <tr>
+              <th> Token </th>
+              <th> Wallet </th>
+              <th> Exchange </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td> ETH </td>
+              <td> {etherBalance} </td>
+              <td> {exchangeEtherBalance} </td>
+            </tr>
+          </tbody>
+        </table>
+        <table className="table table-dark table-sm small">
+          <tbody>
+            <tr>
+              <td> ALEX </td>
+              <td> {tokenBalance} </td>
+              <td> {exchangeTokenBalance} </td>
+            </tr>
+          </tbody>
+        </table>
+      </Tab>
+    </Tabs>
+  )
+}
 
 
 class Balance extends Component{
@@ -32,7 +106,7 @@ class Balance extends Component{
           Balance
         </div>
         <div className="card-body">
-
+            {this.props.showForm ? showForm(this.props) : <Spinner />}
         </div>
       </div>
     )
@@ -40,6 +114,7 @@ class Balance extends Component{
 }
 
 function mapStateToProps(state){
+  const balancesLoading = balancesLoadingSelector(state)
 
   return {
     account: accountSelector(state),
@@ -49,7 +124,9 @@ function mapStateToProps(state){
     etherBalance: etherBalanceSelector(state),
     tokenBalance: tokenBalanceSelector(state),
     exchangeEtherBalance: exchangeEtherBalanceSelector(state),
-    exchangeTokenBalance: exchangeTokenBalanceSelector(state)
+    exchangeTokenBalance: exchangeTokenBalanceSelector(state),
+    balancesLoading,
+    showForm: !balancesLoading
   }
 }
 
