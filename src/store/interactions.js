@@ -156,7 +156,7 @@ export const loadBalances = async (dispatch, web3, exchange, token, account) => 
   }
 }
 
-export const depositEther =  (dispatch, exchange, web3, amount, account) => {
+export const depositEther = (dispatch, exchange, web3, amount, account) => {
   exchange.methods.depositEther().send({ from: account,  value: web3.utils.toWei(amount, 'ether') })
   .on('transactionHash', (hash) => {
     dispatch(balancesLoading())
@@ -166,7 +166,6 @@ export const depositEther =  (dispatch, exchange, web3, amount, account) => {
     window.alert(`There was an error!`)
   })
 }
-
 export const withdrawEther =  (dispatch, exchange, web3, amount, account) => {
   exchange.methods.withdrawEther(web3.utils.toWei(amount, 'ether')).send({from:account})
   .on('transactionHash', (hash) => {

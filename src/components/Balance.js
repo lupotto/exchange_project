@@ -72,7 +72,6 @@ const showForm = (props) => {
           <form className="row" onSubmit={(event) => {
             event.preventDefault()
             depositEther(dispatch, exchange, web3, etherDepositAmount, account)
-            console.log("form submitting");
           }}>
             <div className= "col-12 col-sm pr-sm2">
               <input
@@ -100,7 +99,6 @@ const showForm = (props) => {
         <form className="row" onSubmit={(event) => {
           event.preventDefault()
           depositToken(dispatch, exchange, web3, token, tokenDepositAmount, account)
-          console.log("form submitting");
         }}>
           <div className= "col-12 col-sm pr-sm2">
             <input
@@ -186,7 +184,7 @@ const showForm = (props) => {
 
 
 class Balance extends Component{
-  componentDidMount(){
+  componentWillMount(){
     this.loadBlockchainData()
   }
 
