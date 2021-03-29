@@ -11,7 +11,14 @@ class Template extends Component{
 
 function mapStateToProps(state){
   return {
-    // TODO: Fill me in...
+    <div className="card bg-dark text-white">
+      <div className="card-header">
+        Template
+      </div>
+      <div className="card-body">
+
+      </div>
+    </div>
   }
 }
 
