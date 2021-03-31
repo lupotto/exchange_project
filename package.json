@@ -34,6 +34,7 @@
     "redux": "4.0.5",
     "redux-logger": "3.0.6",
     "reselect": "4.0.0",
+    "serve": "^11.3.2",
     "solidity-coverage": "^0.7.15",
     "truffle": "5.1.45",
     "truffle-flattener": "1.5.0",
@@ -41,12 +42,12 @@
     "web3": "1.2.6"
   },
   "scripts": {
-  "dev": "react-scripts start",
-  "start": "serve -s build",
-  "build": "react-scripts build",
-  "test": "react-scripts test --env=jsdom",
-  "eject": "react-scripts eject",
-  "heroku-postbuild": "npm run build"
+    "dev": "react-scripts start",
+    "start": "serve -s build",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
