@@ -21,8 +21,7 @@ module.exports = {
         )
       },
       gas:2900000,
-      network_id: 3,
-      port: 8545
+      network_id: 3
     }
   },
   contracts_directory: './src/contracts',
